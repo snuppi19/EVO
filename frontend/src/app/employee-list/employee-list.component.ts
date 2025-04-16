@@ -15,6 +15,7 @@ import { Employee } from '../Employee';
           <th>ID</th>
           <th>Tên</th>
           <th>Tuổi</th>
+          <th>Hành Động</th>
         </tr>
       </thead>
       <tbody>
@@ -22,6 +23,9 @@ import { Employee } from '../Employee';
           <td>{{ employee.id }}</td>
           <td>{{ employee.name }}</td>
           <td>{{ employee.age }}</td>
+          <td>
+            <button (click)="deleteEmployee(employee.id)">Xóa</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -41,20 +45,32 @@ import { Employee } from '../Employee';
 export class EmployeeListComponent implements OnInit {
   employees: Employee[] = [];
 
-  constructor(private employeeService: EmployeeService) {}
+  constructor(private employeeService: EmployeeService) { }
 
   ngOnInit(): void {
-    this.refreshList(); 
+    this.refreshList();
   }
 
   refreshList(): void {
     this.employeeService.getEmployees().subscribe({
       next: (data) => {
-        this.employees = data; 
+        this.employees = data;
       },
       error: (err) => {
-        console.error('Lỗi khi tải danh sách:', err); 
+        console.error('Lỗi khi tải danh sách:', err);
       }
     });
+  }
+  deleteEmployee(id: number): void {
+    if (confirm('Bạn có chắc chắn muốn xóa nhân viên này?')) {
+      this.employeeService.deleteEmployee(id).subscribe({
+        next: () => {
+          this.refreshList();
+        },
+        error: (err) => {
+          console.error('Lỗi khi xóa nhân viên:', err);
+        }
+      });
+    }
   }
 }

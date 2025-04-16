@@ -27,4 +27,10 @@ public class EmployeeController {
     EvotekEmployee savedDto = employeeService.saveEmployee(dto);
     return ResponseEntity.ok(savedDto);
   }
+
+  @DeleteMapping("/delete/{id}")
+  public ResponseEntity<?> deleteEmployee(@PathVariable int id) {
+    employeeService.deleteEmployee(id);
+    return ResponseEntity.ok().build();
+  }
 }
