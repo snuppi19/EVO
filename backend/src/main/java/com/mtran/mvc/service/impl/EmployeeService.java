@@ -1,5 +1,6 @@
 package com.mtran.mvc.service.impl;
 
+
 import com.mtran.mvc.converter.EmployeeConverter;
 import com.mtran.mvc.dto.EmployeeDTO;
 import com.mtran.mvc.entity.EvotekEmployee;
@@ -49,6 +50,13 @@ public class EmployeeService {
         dto.setName(capitalizeFirstLetters(dto.getName()));
         EvotekEmployee a = converter.covertToEntity(dto);
         return repository.save(a);
+    }
+
+    public void deleteEmployee(int id) {
+        System.out.println(id);
+        EvotekEmployee a = repository.findById(id).orElse(null);
+        System.out.println(a.getAge()+ a.getName()+ a.getId());
+        repository.delete(a);
     }
 
     private String capitalizeFirstLetters(String input) {

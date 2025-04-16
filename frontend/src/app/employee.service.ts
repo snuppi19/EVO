@@ -10,6 +10,7 @@ export class EmployeeService {
   private baseUrl = 'http://localhost:8080';
   private getUrl = `${this.baseUrl}/list`;
   private createUrl = `${this.baseUrl}/create`;
+  private deleteUrl =`${this.baseUrl}/delete`
 
   constructor(private http: HttpClient) { }
 
@@ -19,5 +20,8 @@ export class EmployeeService {
 
   addEmployee(employee: Employee): Observable<Employee> {
     return this.http.post<Employee>(this.createUrl, employee)
+  }
+  deleteEmployee(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.deleteUrl}/${id}`);
   }
 }
