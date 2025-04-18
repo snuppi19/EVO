@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,10 +25,12 @@ public class EmployeeService {
     @Autowired
     private EmployeeConverter converter;
     private final HashSet<EmployeeDTO> empSet = new HashSet<>();
+    private final TreeSet<EmployeeDTO> treeSet = new TreeSet<>();
 
     public List<EmployeeDTO> getAllEmployee() {
         List<EvotekEmployee> employeeList = repository.findAll();
-        return employeeList.stream().map(converter::covertToDTO).collect(Collectors.toList());
+        treeSet.addAll(employeeList.stream().map(converter::covertToDTO).collect(Collectors.toList()));
+        return treeSet.stream().collect(Collectors.toList());
     }
 
     public EvotekEmployee saveEmployee(EmployeeDTO dto) {
@@ -44,21 +47,30 @@ public class EmployeeService {
         if (dto.getName().isEmpty() || dto.getName().isBlank()) {
             throw new IllegalArgumentException("Employee name can not be empty");
         }
+
+        //check trùng id bằng hashSet
         if (!(empSet.add(dto))) {
             throw new IllegalArgumentException("Employee with ID " + dto.getId() + " already exists");
         }
+
         dto.setName(capitalizeFirstLetters(dto.getName()));
         EvotekEmployee a = converter.covertToEntity(dto);
         return repository.save(a);
     }
 
     public void deleteEmployee(int id) {
-        System.out.println(id);
         EvotekEmployee a = repository.findById(id).orElse(null);
-        System.out.println(a.getAge()+ a.getName()+ a.getId());
+        EmployeeDTO dto = converter.covertToDTO(a);
+        empSet.remove(dto);
+        treeSet.remove(dto);
         repository.delete(a);
     }
 
+
+
+
+
+    //=================================================================================
     private String capitalizeFirstLetters(String input) {
         if (input == null || input.isEmpty()) {
             return input;

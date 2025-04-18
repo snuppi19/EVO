@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EmployeeDTO {
+public class EmployeeDTO implements Comparable<EmployeeDTO> {
     int id;
     String name;
     int age;
@@ -49,5 +49,10 @@ public class EmployeeDTO {
         if(! (obj instanceof EmployeeDTO))return false;
         EmployeeDTO other = (EmployeeDTO)obj;
         return id == other.id;
+    }
+
+    @Override
+    public int compareTo(EmployeeDTO o) {
+        return Integer.compare(id, o.id);
     }
 }
